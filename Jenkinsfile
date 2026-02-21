@@ -1,10 +1,10 @@
 pipeline {
-   agent { label 'dev' }
+    agent { label 'dev' }
     environment {
         DOCKER_IMAGE = "easyshop-app"
         REGISTRY_ID  = "ayushsoni155"
-        // We initialize these as empty; we will populate them in the first stage
         UNIQUE_TAG   = ""
+        SCAN_REPORT  = "trivy-report.txt"
     }
 
     stages {
@@ -12,10 +12,8 @@ pipeline {
             steps {
                 git branch: 'master', url: 'https://github.com/ayushsoni155/EasyShop-k8s'
                 script {
-                    // Generate SHA and Tag after checkout is complete
                     def shortSha = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
                     UNIQUE_TAG = "build-${env.BUILD_NUMBER}-${shortSha}"
-                    echo "Generated Unique Tag: ${UNIQUE_TAG}"
                 }
             }
         }
@@ -23,17 +21,18 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    // Use double quotes to allow Groovy variable interpolation
                     sh "docker build -t ${REGISTRY_ID}/${DOCKER_IMAGE}:${UNIQUE_TAG} ."
                     sh "docker tag ${REGISTRY_ID}/${DOCKER_IMAGE}:${UNIQUE_TAG} ${REGISTRY_ID}/${DOCKER_IMAGE}:latest"
                 }
             }
         }
 
-        stage('Test') {
+        stage('Security Scan (Trivy)') {
             steps {
-                script{
-                echo 'Testing image...'
+                script {
+                    echo "Scanning image for vulnerabilities..."
+                    sh "trivy image --severity HIGH,CRITICAL ${REGISTRY_ID}/${DOCKER_IMAGE}:${UNIQUE_TAG} > ${SCAN_REPORT}"
+                    sh "cat ${SCAN_REPORT}"
                 }
             }
         }
@@ -41,11 +40,10 @@ pipeline {
         stage('Push & Deploy') {
             steps {
                 script {
-                    // Secure login and push
                     withCredentials([usernamePassword(
-                    credentialsId: "DOCKERHUB_CRED",
-                    passwordVariable: "DOCKERHUB_PASS",
-                    usernameVariable: "DOCKERHUB_USER")]) {
+                        credentialsId: "DOCKERHUB_CRED",
+                        passwordVariable: "DOCKERHUB_PASS",
+                        usernameVariable: "DOCKERHUB_USER")]) {
                         sh "docker login -u ${env.DOCKERHUB_USER} -p '${DOCKERHUB_PASS}'"
                         sh "docker push ${REGISTRY_ID}/${DOCKER_IMAGE}:${UNIQUE_TAG}"
                         sh "docker push ${REGISTRY_ID}/${DOCKER_IMAGE}:latest"
@@ -61,7 +59,8 @@ pipeline {
                 emailext from: 'ayushsoni6997@gmail.com',
                          to: 'agent47.6997@gmail.com',
                          subject: "FAILED: Build ${env.JOB_NAME}", 
-                         body: "Build failed: ${env.JOB_NAME} (No. ${env.BUILD_NUMBER})"
+                         body: "Build failed for ${env.JOB_NAME}. See attached Trivy scan for potential security issues.",
+                         attachmentsPattern: "${SCAN_REPORT}"
             }
         }
     
@@ -70,12 +69,13 @@ pipeline {
                 emailext from: 'ayushsoni6997@gmail.com',
                          to: 'agent47.6997@gmail.com',
                          subject: "SUCCESSFUL: Build ${env.JOB_NAME}", 
-                         body: "Build Successful: ${env.JOB_NAME} (No. ${env.BUILD_NUMBER})"
+                         body: "Build Successful! Trivy scan report is attached.",
+                         attachmentsPattern: "${SCAN_REPORT}"
             }
         }
         always {
-            // Cleanup to save disk space on the Jenkins agent
             sh "docker rmi ${REGISTRY_ID}/${DOCKER_IMAGE}:${UNIQUE_TAG} || true"
+            archiveArtifacts artifacts: "${SCAN_REPORT}", allowEmptyArchive: true
         }
     }
 }

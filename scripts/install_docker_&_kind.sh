@@ -35,7 +35,11 @@ sudo usermod -aG docker ubuntu
   chmod +x ./kind
   sudo mv ./kind /usr/local/bin/kind
 
+sudo apt update
+sudo apt install fontconfig openjdk-21-jre -y
+
 echo "Installation complete!"
 kind --version
 docker --version
+java -version
 newgrp docker

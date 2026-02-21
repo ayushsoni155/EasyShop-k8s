@@ -319,3 +319,70 @@ For questions or feedback, please open an issue or contact the maintainers:
 
 > [!NOTE]
 > This section is under development and will be updated with detailed information about the DevOps setup, CI/CD pipeline configuration, infrastructure deployment, and best practices as the project evolves.
+
+## DevOps Practices
+
+### Using Terraform
+
+Terraform is used for infrastructure as code (IaC) in this project. To set up the infrastructure, follow these steps:
+
+1. **Install Terraform**: Ensure you have Terraform installed on your machine. You can download it from [Terraform's official website](https://www.terraform.io/downloads.html).
+
+2. **Initialize Terraform**: Navigate to the `terraform` directory and run the following command to initialize the Terraform configuration:
+   ```bash
+   cd terraform
+   terraform init
+   ```
+
+3. **Plan the Infrastructure**: To see what changes will be made, run:
+   ```bash
+   terraform plan
+   ```
+
+4. **Apply the Configuration**: To create the infrastructure, execute:
+   ```bash
+   terraform apply
+   ```
+   Confirm the action when prompted.
+
+5. **Destroy the Infrastructure**: If you need to tear down the infrastructure, use:
+   ```bash
+   terraform destroy
+   ```
+   Confirm the action when prompted.
+
+### Using Jenkins CI Pipeline
+
+Jenkins is used for continuous integration and deployment in this project. To set up the Jenkins pipeline, follow these steps:
+
+1. **Install Jenkins**: Ensure you have Jenkins installed. You can download it from [Jenkins' official website](https://www.jenkins.io/download/).
+
+2. **Create a New Pipeline**: In Jenkins, create a new pipeline job and configure it to point to your repository.
+
+3. **Configure the Pipeline Script**: Use the following example script in your Jenkins pipeline configuration:
+   ```groovy
+   pipeline {
+       agent any
+       stages {
+           stage('Build') {
+               steps {
+                   sh 'npm install'
+               }
+           }
+           stage('Test') {
+               steps {
+                   sh 'npm test'
+               }
+           }
+           stage('Deploy') {
+               steps {
+                   sh 'npm run deploy'
+               }
+           }
+       }
+   }
+   ```
+
+4. **Run the Pipeline**: Trigger the pipeline manually or set it to run automatically on code changes.
+
+5. **Monitor the Pipeline**: Check the Jenkins dashboard for build status and logs.
