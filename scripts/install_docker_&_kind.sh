@@ -34,9 +34,13 @@ sudo usermod -aG docker ubuntu
   curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.31.0/kind-linux-amd64
   chmod +x ./kind
   sudo mv ./kind /usr/local/bin/kind
-
+  
+# java for jenkins
 sudo apt update
 sudo apt install fontconfig openjdk-21-jre -y
+
+# trivy
+curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin v0.69.1
 
 echo "Installation complete!"
 kind --version
