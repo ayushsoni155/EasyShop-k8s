@@ -1,6 +1,5 @@
 pipeline {
-    agent dev
-    
+   agent { label 'dev' }
     environment {
         DOCKER_IMAGE = "easyshop-app"
         REGISTRY_ID  = "ayushsoni155"
