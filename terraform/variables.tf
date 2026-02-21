@@ -13,13 +13,32 @@ variable "ami_id" {
   type        = string
   default     = "ami-03446a3af42c5e74e"
 }
-variable "instance_type" {
-  description = "Instance type for the EC2 instance"
-  type        = string
-  default     = "m7i-flex.large"
-}
-variable "volume_size" {
-  description = "Root volume size in GB"
-  type        = number
-  default     = 20
+variable "instance" {
+  type = map(object({
+    name            = string
+    description     = string
+    instance_type   = string
+    volume_size     = number
+    security_groups = string
+    user_data       = string
+  }))
+  default = {
+    "easyshop-ec2" = {
+      "name"            = "easyshop-ec2"
+      "description"     = "EasyShop EC2 instance"
+      "instance_type"   = "m7i-flex.large"
+      "volume_size"     = 20
+      "security_groups" = "easyshop-sg"
+      "user_data"       = "../scripts/install_docker_&_kind.sh"
+    },
+    "jenkins-ec2" = {
+      "name"            = "jenkins-ec2"
+      "description"     = "Jenkins EC2 instance"
+      "instance_type"   = "t3.small"
+      "volume_size"     = 10
+      "security_groups" = "jenkins-sg"
+      "user_data"       = "../scripts/install_jenkins.sh"
+    }
+  }
+  description = "EasyShop EC2 instance"
 }
