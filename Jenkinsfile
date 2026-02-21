@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent dev
     
     environment {
         DOCKER_IMAGE = "easyshop-app"
@@ -63,7 +63,6 @@ pipeline {
                          to: 'agent47.6997@gmail.com',
                          subject: "FAILED: Build ${env.JOB_NAME}", 
                          body: "Build failed: ${env.JOB_NAME} (No. ${env.BUILD_NUMBER})",
-                         attachmentsPattern: 'fileAnalysis.txt, dockerAnalysis.txt'
             }
         }
     
@@ -73,7 +72,6 @@ pipeline {
                          to: 'agent47.6997@gmail.com',
                          subject: "SUCCESSFUL: Build ${env.JOB_NAME}", 
                          body: "Build Successful: ${env.JOB_NAME} (No. ${env.BUILD_NUMBER})",
-                         attachmentsPattern: 'fileAnalysis.txt, dockerAnalysis.txt'
             }
         }
         always {
