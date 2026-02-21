@@ -43,8 +43,11 @@ pipeline {
             steps {
                 script {
                     // Secure login and push
-                    withCredentials([string(credentialsId: 'DOCKERHUB_PASS', variable: 'SECRET_VAR')]) {
-                        sh "docker login -u ${REGISTRY_ID} -p '${SECRET_VAR}'"
+                    withCredentials([usernamePassword(
+                    credentialsId: "DOCKERHUB_CRED",
+                    passwordVariable: "DOCKERHUB_PASS",
+                    usernameVariable: "DOCKERHUB_USER")]) {
+                        sh "docker login -u ${env.DOCKERHUB_USER} -p '${DOCKERHUB_PASS}'"
                         sh "docker push ${REGISTRY_ID}/${DOCKER_IMAGE}:${UNIQUE_TAG}"
                         sh "docker push ${REGISTRY_ID}/${DOCKER_IMAGE}:latest"
                     }
