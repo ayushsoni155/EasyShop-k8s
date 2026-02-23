@@ -91,5 +91,5 @@ resource "aws_instance" "easyshop_instance" {
 resource "aws_ec2_instance_state" "easyshop_instance_state" {
   for_each = var.instance
   instance_id = aws_instance.easyshop_instance[each.value.name].id
-  state       = "running"
+  state       = "stopped"
 }
