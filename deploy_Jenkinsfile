@@ -58,7 +58,7 @@ pipeline {
             steps {
                 script {
                  // Wait for the easyshop deployment to be fully rolled out and available
-                     sh "kubectl rollout status deployment/easyshop-deployment -n easyshop-ns --timeout=90s"
+                     sh "kubectl rollout status deployment/frontend -n easyshop-ns --timeout=90s"
                  }
             }
         }
