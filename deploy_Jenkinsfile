@@ -9,48 +9,48 @@ pipeline {
         stage('namespace') {
             steps {
                 script {
-                    sh "kubectl apply -f /kubernetes/esayshop-k8s/namespace.yml"
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/namespace.yml"
                 }
             }
         }
         stage('volume') {
             steps {
                 script {
-                    sh "kubectl apply -f /kubernetes/esayshop-k8s/mongoPv.yml"
-                    sh "kubectl apply -f /kubernetes/esayshop-k8s/mongoPvc.yml"
-                    sh "kubectl apply -f /kubernetes/esayshop-k8s/redisPv.yml"
-                    sh "kubectl apply -f /kubernetes/esayshop-k8s/redisPvc.yml"
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/mongoPv.yml"
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/mongoPvc.yml"
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/redisPv.yml"
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/redisPvc.yml"
                 }
             }
         }
         stage('Deployment') {
             steps {
                 script {
-                    sh "kubectl apply -f /kubernetes/esayshop-k8s/mongoDeployment.yml"
-                    sh "kubectl apply -f /kubernetes/esayshop-k8s/redisDeployment.yml"
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/mongoDeployment.yml"
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/redisDeployment.yml"
                 }
             }
         }
          stage('Services') {
             steps {
                 script {
-                    sh "kubectl apply -f /kubernetes/esayshop-k8s/mongoService.yml"
-                    sh "kubectl apply -f /kubernetes/esayshop-k8s/redisService.yml"
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/mongoService.yml"
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/redisService.yml"
                 }
             }
         }
         stage('Migrate') {
             steps {
                 script {
-                    sh "kubectl apply -f /kubernetes/esayshop-k8s/migration-job.yml"
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/migration-job.yml"
                 }
             }
         }
         stage('deploy') {
             steps {
                 script {
-                    sh "kubectl apply -f /kubernetes/esayshop-k8s/easyshopDeployment.yml"
-                    sh "kubectl apply -f /kubernetes/esayshop-k8s/easyshopService.yml"
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/easyshopDeployment.yml"
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/easyshopService.yml"
                 }
             }
         }
