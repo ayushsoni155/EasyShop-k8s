@@ -6,7 +6,6 @@ pipeline {
                 git branch: 'k8s-test', url: 'https://github.com/ayushsoni155/EasyShop-k8s'
             }
         }
-
         stage('namespace') {
             steps {
                 script {
@@ -70,17 +69,19 @@ pipeline {
                 emailext from: 'ayushsoni6997@gmail.com',
                          to: 'agent47.6997@gmail.com',
                          subject: "FAILED: Deploy", 
-                         body: "Deploy failed .",
+                         body: "Deploy failed."
             }
         }
-    
         success {
             script {
                 emailext from: 'ayushsoni6997@gmail.com',
                          to: 'agent47.6997@gmail.com',
                          subject: "SUCCESSFUL: Deploy", 
-                         body: "Deploy Successful! ",
+                         body: "Deploy Successful! "
             }
+        }
+        always {
+            cleanWs() // Good practice to keep the agent clean
         }
     }
 }
