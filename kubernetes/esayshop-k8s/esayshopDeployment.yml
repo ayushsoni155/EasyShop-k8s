@@ -24,9 +24,9 @@ spec:
         - name: REDIS_URI
           value: redis://redis-svc:6379
         - name: PRODUCTION_NEXTAUTH_URL
-          value: http://3.248.209.76
+          value: http://54.76.184.32
         - name: PRODUCTION_NEXT_PUBLIC_API_URL
-          value: http://3.248.209.76/api
+          value: http://54.76.184.32/api
         - name: NEXTAUTH_SECRET
           value: HmaFjYZ2jbUK7Ef+wZrBiJei4ZNGBAJ5IdiOGAyQegw=
         - name: JWT_SECRET
