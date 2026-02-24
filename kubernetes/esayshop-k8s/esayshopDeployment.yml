@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: ayushsoni155/easyshop-app:build-6-c2c4c7a
+        image: ayushsoni155/easyshop-app:latest
         ports:
         - containerPort: 3000
         env:
