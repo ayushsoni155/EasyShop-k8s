@@ -13,4 +13,4 @@ spec:
           image: ayushsoni155/easyshop-migration:latest
           env:
             - name: MONGODB_URI
-              value: "mongodb://mongo-svc:27017/easyshop"
+              value: "mongodb://mongo-svc:27017/easyshop" 
