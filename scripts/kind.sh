@@ -65,7 +65,7 @@ nodes:
   image: kindest/node:v1.35.1" > clusterConfig.yml
 
 # Provision the cluster using the configuration file created above
-kind create cluster --config=clusterConfig.yml
+sudo kind create cluster --config=clusterConfig.yml
 
 # --- 6. INSTALL KUBECTL ---
 # Download the latest stable kubectl binary and its checksum for security

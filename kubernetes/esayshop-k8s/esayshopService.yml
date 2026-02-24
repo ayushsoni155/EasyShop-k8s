@@ -4,7 +4,6 @@ metadata:
   namespace: easyshop-ns
   name: frontend
 spec:
-  type: NodePort
   selector:
     app: frontend
   ports:
