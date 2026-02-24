@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/ayushsoni155/EasyShop-k8s'
+                git branch: 'k8s-test', url: 'https://github.com/ayushsoni155/EasyShop-k8s'
                 script {
                     def shortSha = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
                     UNIQUE_TAG = "build-${env.BUILD_NUMBER}-${shortSha}"

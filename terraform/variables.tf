@@ -23,13 +23,21 @@ variable "instance" {
     user_data       = string
   }))
   default = {
-    "easyshop-ec2" = {
-      "name"            = "easyshop-ec2"
+     "easyshop" = {
+      "name"            = "easyshop"
+      "description"     = "EasyShop EC2 instance"
+      "instance_type"   = "m7i-flex.large"
+      "volume_size"     = 30
+      "security_groups" = "easyshop-sg"
+      "user_data"       = "../scripts/kind.sh"
+    },
+    "jenkins-agent" = {
+      "name"            = "jenkins-agent"
       "description"     = "EasyShop EC2 instance"
       "instance_type"   = "m7i-flex.large"
       "volume_size"     = 20
-      "security_groups" = "easyshop-sg"
-      "user_data"       = "../scripts/install_docker_&_kind.sh"
+      "security_groups" = "jenkins-sg"
+      "user_data"       = "../scripts/install_docker_&_java.sh"
     },
     "jenkins-ec2" = {
       "name"            = "jenkins-ec2"

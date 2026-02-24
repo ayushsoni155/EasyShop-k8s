@@ -1,0 +1,95 @@
+pipeline {
+    agent { label 'deploy' }
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'k8s-test', url: 'https://github.com/ayushsoni155/EasyShop-k8s'
+            }
+        }
+        stage('namespace') {
+            steps {
+                script {
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/namespace.yml"
+                }
+            }
+        }
+        stage('volume') {
+            steps {
+                script {
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/mongoPv.yml"
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/mongoPvc.yml"
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/redisPv.yml"
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/redisPvc.yml"
+                }
+            }
+        }
+        stage('Deployment') {
+            steps {
+                script {
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/mongoDeployment.yml"
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/redisDeployment.yml"
+                }
+            }
+        }
+         stage('Services') {
+            steps {
+                script {
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/mongoService.yml"
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/redisService.yml"
+                }
+            }
+        }
+        stage('Migrate') {
+            steps {
+                script {
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/migration-job.yml"
+                }
+            }
+        }
+        stage('deploy') {
+            steps {
+                script {
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/easyshopDeployment.yml"
+                    sh "kubectl apply -f kubernetes/esayshop-k8s/easyshopService.yml"
+                }
+            }
+        }
+        stage('Wait for Readiness') {
+            steps {
+                script {
+                 // Wait for the easyshop deployment to be fully rolled out and available
+                     sh "kubectl rollout status deployment/frontend -n easyshop-ns --timeout=90s"
+                 }
+            }
+        }
+        stage('Port Export') {
+            steps {
+                script {
+                    sh "sudo -E kubectl port-forward svc/frontend -n easyshop-ns 3000:3000 --address=0.0.0.0&"
+                }
+            }
+        }
+    }
+    
+    post {
+        failure {
+            script {
+                emailext from: 'ayushsoni6997@gmail.com',
+                         to: 'agent47.6997@gmail.com',
+                         subject: "FAILED: Deploy", 
+                         body: "Deploy failed."
+            }
+        }
+        success {
+            script {
+                emailext from: 'ayushsoni6997@gmail.com',
+                         to: 'agent47.6997@gmail.com',
+                         subject: "SUCCESSFUL: Deploy", 
+                         body: "Deploy Successful! "
+            }
+        }
+        always {
+            cleanWs() // Good practice to keep the agent clean
+        }
+    }
+}

@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: easyshop-migration
+  namespace: easyshop-ns
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migration
+          image: ayushsoni155/easyshop-migration:latest
+          env:
+            - name: MONGODB_URI
+              value: "mongodb://mongo-svc:27017/easyshop" 
