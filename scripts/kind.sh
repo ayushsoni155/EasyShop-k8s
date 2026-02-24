@@ -44,10 +44,14 @@ curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.31.0/kind-linux-amd64
 chmod +x ./kind
 # Move binary to a global path so it's accessible anywhere
 sudo mv ./kind /usr/local/bin/kind
+# java for jenkins
+sudo apt update
+sudo apt install fontconfig openjdk-21-jre -y
 
 echo "Installation complete!"
 kind --version
 docker --version 
+java -version
 
 # --- 5. DEPLOY KIND CLUSTER ---
 # Create a YAML configuration for a multi-node cluster
